@@ -1,8 +1,8 @@
 package aws
 
 import (
-	awsConfig "go-common/aws/config"
-	awsRedis "go-common/aws/redis"
+	awsConfig "github.com/BeeTechHub/go-common/aws/config"
+	awsRedis "github.com/BeeTechHub/go-common/aws/redis"
 )
 
 func InitAws() {

@@ -2,9 +2,10 @@ package configs
 
 import (
 	"fmt"
-	"go-common/logger"
 	"os"
 	"strconv"
+
+	"github.com/BeeTechHub/go-common/logger"
 
 	"github.com/joho/godotenv"
 )

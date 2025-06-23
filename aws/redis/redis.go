@@ -4,11 +4,12 @@ import (
 	"context"
 	"errors"
 	"fmt"
-	config "go-common/aws/config"
-	"go-common/configs"
-	"go-common/logger"
 	"strconv"
 	"time"
+
+	config "github.com/BeeTechHub/go-common/aws/config"
+	"github.com/BeeTechHub/go-common/configs"
+	"github.com/BeeTechHub/go-common/logger"
 
 	"github.com/aws/aws-sdk-go/aws"
 	"github.com/aws/aws-sdk-go/aws/awserr"
