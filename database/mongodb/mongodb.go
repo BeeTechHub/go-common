@@ -15,10 +15,12 @@ type MongoClientWrapper struct {
 
 type MongoDatabaseWrapper struct {
 	Database *mongo.Database
+	Timeout  time.Duration
 }
 
 type MongoCollectionWrapper struct {
 	Collection *mongo.Collection
+	Timeout    time.Duration
 }
 
 func ConnectDB(mongoUri string, timeOutConnection time.Duration) (MongoClientWrapper, error) {
@@ -54,12 +56,12 @@ func ConnectDB(mongoUri string, timeOutConnection time.Duration) (MongoClientWra
 	return MongoClientWrapper{client}, nil
 }
 
-func (client MongoClientWrapper) GetDatabase(databaseName string) MongoDatabaseWrapper {
-	return MongoDatabaseWrapper{client.Client.Database(databaseName)}
+func (client MongoClientWrapper) GetDatabase(databaseName string, timeout time.Duration) MongoDatabaseWrapper {
+	return MongoDatabaseWrapper{client.Client.Database(databaseName), timeout}
 }
 
 func (database MongoDatabaseWrapper) GetCollection(collectionName string) MongoCollectionWrapper {
-	return MongoCollectionWrapper{database.Database.Collection(collectionName)}
+	return MongoCollectionWrapper{database.Database.Collection(collectionName), database.Timeout}
 }
 
 func (client MongoClientWrapper) StartSession(opts ...*options.SessionOptions) (mongo.Session, error) {
