@@ -17,7 +17,11 @@ type MongoDatabaseWrapper struct {
 	Database *mongo.Database
 }
 
-func ConnectDB(mongoUri string, timeOutConnection time.Duration) (*MongoClientWrapper, error) {
+type MongoCollectionWrapper struct {
+	Collection *mongo.Collection
+}
+
+func ConnectDB(mongoUri string, timeOutConnection time.Duration) (MongoClientWrapper, error) {
 	/*cmdMonitor := &event.CommandMonitor{
 		Started: func(_ context.Context, evt *event.CommandStartedEvent) {
 			log.Print(evt.Command)
@@ -30,34 +34,34 @@ func ConnectDB(mongoUri string, timeOutConnection time.Duration) (*MongoClientWr
 	client, err := mongo.NewClient(mongodbOption)
 	if err != nil {
 		fmt.Println(err)
-		return nil, err
+		return MongoClientWrapper{client}, err
 	}
 
 	ctx, _ := context.WithTimeout(context.Background(), timeOutConnection*time.Second)
 	err = client.Connect(ctx)
 	if err != nil {
 		fmt.Println(err)
-		return nil, err
+		return MongoClientWrapper{client}, err
 	}
 
 	//ping the database
 	err = client.Ping(ctx, nil)
 	if err != nil {
 		fmt.Println(err)
-		return nil, err
+		return MongoClientWrapper{client}, err
 	}
 	fmt.Println("Connected to MongoDB")
-	return &MongoClientWrapper{client}, nil
+	return MongoClientWrapper{client}, nil
 }
 
-func (db *MongoClientWrapper) GetDatabase(databaseName string) *mongo.Database {
-	return db.Client.Database(databaseName)
+func (client MongoClientWrapper) GetDatabase(databaseName string) MongoDatabaseWrapper {
+	return MongoDatabaseWrapper{client.Client.Database(databaseName)}
 }
 
-func (db *MongoDatabaseWrapper) GetCollection(collectionName string) *mongo.Collection {
-	return db.Database.Collection(collectionName)
+func (database MongoDatabaseWrapper) GetCollection(collectionName string) MongoCollectionWrapper {
+	return MongoCollectionWrapper{database.Database.Collection(collectionName)}
 }
 
-func (db *MongoClientWrapper) StartSession(opts ...*options.SessionOptions) (mongo.Session, error) {
-	return db.Client.StartSession(opts...)
+func (client MongoClientWrapper) StartSession(opts ...*options.SessionOptions) (mongo.Session, error) {
+	return client.Client.StartSession(opts...)
 }
