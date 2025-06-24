@@ -32,14 +32,14 @@ func ConnectDB(mongoUri string, timeOutConnection time.Duration) (MongoClientWra
 
 	fmt.Println("Try to connect to MongoDB:" + mongoUri)
 	//mongodbOption := options.Client().ApplyURI(EnvMongoURI()).SetTimeout(constants.TIME_OUT_CONNECTION * time.Second).SetMonitor(cmdMonitor)
-	mongodbOption := options.Client().ApplyURI(mongoUri).SetTimeout(timeOutConnection * time.Second)
+	mongodbOption := options.Client().ApplyURI(mongoUri).SetTimeout(timeOutConnection)
 	client, err := mongo.NewClient(mongodbOption)
 	if err != nil {
 		fmt.Println(err)
 		return MongoClientWrapper{client}, err
 	}
 
-	ctx, _ := context.WithTimeout(context.Background(), timeOutConnection*time.Second)
+	ctx, _ := context.WithTimeout(context.Background(), timeOutConnection)
 	err = client.Connect(ctx)
 	if err != nil {
 		fmt.Println(err)

@@ -17,70 +17,70 @@ func getOrCreateContext(ctx mongo.SessionContext, timeout time.Duration) (contex
 	return context.WithTimeout(context.Background(), timeout)
 }
 
-func (collection MongoCollectionWrapper) count(sessContext mongo.SessionContext, filter bson.M, opts ...*options.CountOptions) (int64, error) {
+func (collection MongoCollectionWrapper) Count(sessContext mongo.SessionContext, filter bson.M, opts ...*options.CountOptions) (int64, error) {
 	ctx, cancel := getOrCreateContext(sessContext, collection.Timeout)
 	defer cancel()
 
 	return collection.Collection.CountDocuments(ctx, filter, opts...)
 }
 
-func (collection MongoCollectionWrapper) findOne(sessContext mongo.SessionContext, filter bson.M, opts ...*options.FindOneOptions) *mongo.SingleResult {
+func (collection MongoCollectionWrapper) FindOne(sessContext mongo.SessionContext, filter bson.M, opts ...*options.FindOneOptions) *mongo.SingleResult {
 	ctx, cancel := getOrCreateContext(sessContext, collection.Timeout)
 	defer cancel()
 
 	return collection.Collection.FindOne(ctx, filter, opts...)
 }
 
-func (collection MongoCollectionWrapper) findMany(sessContext mongo.SessionContext, filter bson.M, opts ...*options.FindOptions) (*mongo.Cursor, error) {
+func (collection MongoCollectionWrapper) FindMany(sessContext mongo.SessionContext, filter bson.M, opts ...*options.FindOptions) (*mongo.Cursor, error) {
 	ctx, cancel := getOrCreateContext(sessContext, collection.Timeout)
 	defer cancel()
 
 	return collection.Collection.Find(ctx, filter, opts...)
 }
 
-func (collection MongoCollectionWrapper) findManyWithAggregation(sessContext mongo.SessionContext, pipeline []bson.M, opts ...*options.AggregateOptions) (*mongo.Cursor, error) {
+func (collection MongoCollectionWrapper) FindManyWithAggregation(sessContext mongo.SessionContext, pipeline []bson.M, opts ...*options.AggregateOptions) (*mongo.Cursor, error) {
 	ctx, cancel := getOrCreateContext(sessContext, collection.Timeout)
 	defer cancel()
 
 	return collection.Collection.Aggregate(ctx, pipeline, opts...)
 }
 
-func (collection MongoCollectionWrapper) updateOne(sessContext mongo.SessionContext, filter bson.M, update bson.M, opts ...*options.UpdateOptions) (*mongo.UpdateResult, error) {
+func (collection MongoCollectionWrapper) UpdateOne(sessContext mongo.SessionContext, filter bson.M, update bson.M, opts ...*options.UpdateOptions) (*mongo.UpdateResult, error) {
 	ctx, cancel := getOrCreateContext(sessContext, collection.Timeout)
 	defer cancel()
 
 	return collection.Collection.UpdateOne(ctx, filter, update, opts...)
 }
 
-func (collection MongoCollectionWrapper) updateMany(sessContext mongo.SessionContext, filter bson.M, update bson.M, opts ...*options.UpdateOptions) (*mongo.UpdateResult, error) {
+func (collection MongoCollectionWrapper) UpdateMany(sessContext mongo.SessionContext, filter bson.M, update bson.M, opts ...*options.UpdateOptions) (*mongo.UpdateResult, error) {
 	ctx, cancel := getOrCreateContext(sessContext, collection.Timeout)
 	defer cancel()
 
 	return collection.Collection.UpdateMany(ctx, filter, update, opts...)
 }
 
-func (collection MongoCollectionWrapper) insertOne(sessContext mongo.SessionContext, newRecord interface{}, opts ...*options.InsertOneOptions) (*mongo.InsertOneResult, error) {
+func (collection MongoCollectionWrapper) InsertOne(sessContext mongo.SessionContext, newRecord interface{}, opts ...*options.InsertOneOptions) (*mongo.InsertOneResult, error) {
 	ctx, cancel := getOrCreateContext(sessContext, collection.Timeout)
 	defer cancel()
 
 	return collection.Collection.InsertOne(ctx, newRecord, opts...)
 }
 
-func (collection MongoCollectionWrapper) insertMany(sessContext mongo.SessionContext, newRecords []interface{}, opts ...*options.InsertManyOptions) (*mongo.InsertManyResult, error) {
+func (collection MongoCollectionWrapper) InsertMany(sessContext mongo.SessionContext, newRecords []interface{}, opts ...*options.InsertManyOptions) (*mongo.InsertManyResult, error) {
 	ctx, cancel := getOrCreateContext(sessContext, collection.Timeout)
 	defer cancel()
 
 	return collection.Collection.InsertMany(ctx, newRecords, opts...)
 }
 
-func (collection MongoCollectionWrapper) deleteMany(sessContext mongo.SessionContext, filter bson.M, opts ...*options.DeleteOptions) (*mongo.DeleteResult, error) {
+func (collection MongoCollectionWrapper) DeleteMany(sessContext mongo.SessionContext, filter bson.M, opts ...*options.DeleteOptions) (*mongo.DeleteResult, error) {
 	ctx, cancel := getOrCreateContext(sessContext, collection.Timeout)
 	defer cancel()
 
 	return collection.Collection.DeleteMany(ctx, filter, opts...)
 }
 
-func (collection MongoCollectionWrapper) bulkWrite(sessContext mongo.SessionContext, models []mongo.WriteModel, opts ...*options.BulkWriteOptions) (*mongo.BulkWriteResult, error) {
+func (collection MongoCollectionWrapper) BulkWrite(sessContext mongo.SessionContext, models []mongo.WriteModel, opts ...*options.BulkWriteOptions) (*mongo.BulkWriteResult, error) {
 	ctx, cancel := getOrCreateContext(sessContext, collection.Timeout)
 	defer cancel()
 
