@@ -40,7 +40,7 @@ func (collection MongoCollectionWrapper) FindMany(sessContext mongo.SessionConte
 	return collection.Collection.Find(ctx, filter, opts...)
 }
 
-func (collection MongoCollectionWrapper) FindManyWithAggregation(sessContext mongo.SessionContext, pipeline []bson.M, records any, opts ...*options.AggregateOptions) error {
+func (collection MongoCollectionWrapper) FindManyWithAggregation(sessContext mongo.SessionContext, records any, pipeline []bson.M, opts ...*options.AggregateOptions) error {
 	ctx, cancel := getOrCreateContext(sessContext, collection.Timeout)
 	defer cancel()
 
