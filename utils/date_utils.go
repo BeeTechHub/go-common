@@ -47,6 +47,11 @@ func Time_ToStringDate01_GmtPlus7(input time.Time) (string, error) {
 	return formattedTime, nil
 }
 
+// time to string format "dd/MM/yyyy" (do not care about timezone) (usually use with date of birth)
+func Time_ToStringDate02(input time.Time) string {
+	return input.Format(DTFM_DATE_02)
+}
+
 // Time to string format "yyyyMM" in GMT+7
 func Time_ToStringDateMonth01_GmtPlus7(input time.Time) (string, error) {
 	location, err := time.LoadLocation(GmtPlus7)
