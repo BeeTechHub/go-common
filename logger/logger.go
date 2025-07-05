@@ -1,10 +1,10 @@
 package logger
 
 import (
+	"fmt"
 	"os"
-	"strconv"
+	"strings"
 
-	"github.com/joho/godotenv"
 	"gopkg.in/natefinch/lumberjack.v2"
 
 	"go.uber.org/zap"
@@ -13,39 +13,34 @@ import (
 
 var appLogger *zap.SugaredLogger
 
-// -------------- Start LOGGING ----------------------------
-func GetEnv(envName string) string {
-	err := godotenv.Load()
-	if err != nil {
-		Fatal("Error loading .env name:" + envName)
+func InitLogger(logLevel string, writeLogToFile bool) {
+	fmt.Printf("logger init with loglevel:%s", logLevel)
+	level := zapcore.DebugLevel
+	if len(logLevel) <= 0 {
+		level = zapcore.DebugLevel
+	} else {
+		tmp := strings.TrimSpace(logLevel)
+		if strings.EqualFold(tmp, "error") {
+			level = zapcore.ErrorLevel
+		} else if strings.EqualFold(tmp, "warn") {
+			level = zapcore.WarnLevel
+		} else if strings.EqualFold(tmp, "info") {
+			level = zapcore.InfoLevel
+		} else {
+			level = zapcore.DebugLevel
+		}
 	}
-
-	return os.Getenv(envName)
-}
-
-func ConfigWriteLogToFile() bool {
-	result, error := strconv.ParseBool(GetEnv("LOG_WRITE_TO_FILE"))
-	if error != nil {
-		Warnf("ConfigWriteLogToFile error: %s", error.Error())
-		return false
-	}
-	return result
-}
-
-// -------------- End LOGGING ----------------------------
-
-func InitLogger() {
 	writerSyncer := getLogWriter()
 	encoder := getEncoder()
 
 	var core zapcore.Core
-	if ConfigWriteLogToFile() {
+	if writeLogToFile {
 		core = zapcore.NewTee(
-			zapcore.NewCore(encoder, writerSyncer, zapcore.DebugLevel),
-			zapcore.NewCore(encoder, zapcore.AddSync(os.Stdout), zapcore.DebugLevel),
+			zapcore.NewCore(encoder, writerSyncer, level),
+			zapcore.NewCore(encoder, zapcore.AddSync(os.Stdout), level),
 		)
 	} else {
-		core = zapcore.NewCore(encoder, zapcore.AddSync(os.Stdout), zapcore.DebugLevel)
+		core = zapcore.NewCore(encoder, zapcore.AddSync(os.Stdout), level)
 	}
 
 	logger := zap.New(core, zap.AddCaller(), zap.AddCallerSkip(1))
