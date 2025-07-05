@@ -75,6 +75,12 @@ func StringDate01_ToTime(input string) (time.Time, error) {
 	return t, err
 }
 
+// String format "dd/MM/yyyy" in GMT+0 to time
+func StringDate02_ToTime(input string) (time.Time, error) {
+	t, err := time.Parse(DTFM_DATE_01, input)
+	return t, err
+}
+
 // string format "yyyyMMdd" in GMT+7 to time
 func StringDate01_GmtPlus7_ToTime(input string) (time.Time, error) {
 	location, err := time.LoadLocation(GmtPlus7) // GMT+7
