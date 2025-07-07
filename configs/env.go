@@ -34,6 +34,12 @@ func GetInt64EnvFromOS(envName string) (int64, error) {
 	return ret, err
 }
 
+func GetEnvUintFromOS(envName string) (uint64, error) {
+	val := GetEnvFromOS(envName)
+	ret, err := strconv.ParseUint(val, 10, 64)
+	return ret, err
+}
+
 func GetBoolEnvFromOS(envName string) (bool, error) {
 	val := GetEnvFromOS(envName)
 	ret, err := strconv.ParseBool(val)
