@@ -31,9 +31,12 @@ func GetEnvFromOS(envName string) string {
 func GetInt64EnvFromOS(envName string) (int64, error) {
 	val := GetEnvFromOS(envName)
 	ret, err := strconv.ParseInt(val, 10, 64)
-	if err != nil {
-		logger.Fatal("Error loading .env name:" + envName)
-	}
+	return ret, err
+}
+
+func GetBoolEnvFromOS(envName string) (bool, error) {
+	val := GetEnvFromOS(envName)
+	ret, err := strconv.ParseBool(val)
 	return ret, err
 }
 
