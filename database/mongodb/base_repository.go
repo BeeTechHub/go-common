@@ -33,11 +33,17 @@ func (collection MongoCollectionWrapper) FindOne(sessContext mongo.SessionContex
 	return collection.Collection.FindOne(ctx, filter, opts...)
 }
 
-func (collection MongoCollectionWrapper) FindMany(sessContext mongo.SessionContext, filter bson.M, opts ...*options.FindOptions) (*mongo.Cursor, error) {
+func (collection MongoCollectionWrapper) FindMany(sessContext mongo.SessionContext, records any, filter bson.M, opts ...*options.FindOptions) error {
 	ctx, cancel := getOrCreateContext(sessContext, collection.Timeout)
 	defer cancel()
 
-	return collection.Collection.Find(ctx, filter, opts...)
+	cursor, err := collection.Collection.Find(ctx, filter, opts...)
+	if err != nil {
+		return err
+	}
+	defer cursor.Close(context.TODO())
+
+	return cursor.All(context.TODO(), records)
 }
 
 func (collection MongoCollectionWrapper) FindManyWithAggregation(sessContext mongo.SessionContext, records any, pipeline []bson.M, opts ...*options.AggregateOptions) error {
