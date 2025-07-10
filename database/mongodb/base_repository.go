@@ -26,11 +26,11 @@ func (collection MongoCollectionWrapper) Count(sessContext mongo.SessionContext,
 	return collection.Collection.CountDocuments(ctx, filter, opts...)
 }
 
-func (collection MongoCollectionWrapper) FindOne(sessContext mongo.SessionContext, filter bson.M, opts ...*options.FindOneOptions) *mongo.SingleResult {
+func (collection MongoCollectionWrapper) FindOne(sessContext mongo.SessionContext, record any, filter bson.M, opts ...*options.FindOneOptions) error {
 	ctx, cancel := getOrCreateContext(sessContext, collection.Timeout)
 	defer cancel()
 
-	return collection.Collection.FindOne(ctx, filter, opts...)
+	return collection.Collection.FindOne(ctx, filter, opts...).Decode(record)
 }
 
 func (collection MongoCollectionWrapper) FindMany(sessContext mongo.SessionContext, records any, filter bson.M, opts ...*options.FindOptions) error {
