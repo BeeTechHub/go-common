@@ -44,7 +44,7 @@ func initClientLocal() (*RedisClientWrapper, error) {
 	}
 }
 
-func initClientAws(cacheClusterName, cacheUrl string) (*RedisClientWrapper, error) {
+func initClientAws(cacheClusterName string) (*RedisClientWrapper, error) {
 	fmt.Println("Redis client start...")
 	// Set up AWS session and Elasticache client
 	sess := config.GetAWSSession()
@@ -74,25 +74,40 @@ func initClientAws(cacheClusterName, cacheUrl string) (*RedisClientWrapper, erro
 	}
 
 	// print the endpoint of the cluster
-	if len(result.CacheClusters) <= 0 || result.CacheClusters[0] == nil {
+	if len(result.CacheClusters) <= 0 || result.CacheClusters[0] == nil ||
+		len(result.CacheClusters[0].CacheNodes) <= 0 || result.CacheClusters[0].CacheNodes[0] == nil {
 		errMessage := fmt.Sprintf("Missing elasticache cluster with name: %s", clusterName)
+		fmt.Println(errMessage)
+		return nil, errors.New(errMessage)
+	}
+
+	endpoint := result.CacheClusters[0].CacheNodes[0].Endpoint.Address
+	if endpoint == nil {
+		errMessage := fmt.Sprintf("Missing elasticache cluster address with name: %s", clusterName)
+		fmt.Println(errMessage)
+		return nil, errors.New(errMessage)
+	}
+
+	port := result.CacheClusters[0].CacheNodes[0].Endpoint.Port
+	if port == nil {
+		errMessage := fmt.Sprintf("Missing elasticache cluster port with name: %s", clusterName)
 		fmt.Println(errMessage)
 		return nil, errors.New(errMessage)
 	}
 
 	// Create a Redis client and connect to the cluster
 	redisClient := redis.NewClient(&redis.Options{
-		Addr: fmt.Sprintf("%s:%d", cacheUrl, 6379),
+		Addr: fmt.Sprintf("%s:%d", *endpoint, *port),
 	})
 
 	return &RedisClientWrapper{redisClient}, nil
 }
 
-func InitRedis(cacheClusterName, cacheUrl string) (*RedisClientWrapper, error) {
+func InitRedis(cacheClusterName string) (*RedisClientWrapper, error) {
 	if configs.GetCacheHost() == "local" {
 		return initClientLocal()
 	} else {
-		return initClientAws(cacheClusterName, cacheUrl)
+		return initClientAws(cacheClusterName)
 	}
 }
 
