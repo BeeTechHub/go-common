@@ -9,6 +9,6 @@ func InitAws() {
 	awsConfig.InitAws()
 }
 
-func InitRedis(cacheClusterName, cacheUrl string) (*awsRedis.RedisClientWrapper, error) {
-	return awsRedis.InitRedis(cacheClusterName, cacheUrl)
+func InitRedis(cacheClusterName string) (*awsRedis.RedisClientWrapper, error) {
+	return awsRedis.InitRedis(cacheClusterName)
 }
