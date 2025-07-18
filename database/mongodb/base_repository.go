@@ -147,7 +147,7 @@ func (collection MongoCollectionWrapper) FindPaginated(sessContext mongo.Session
 
 	if len(sortParams) == 0 {
 		sortParams = bson.D{
-			{"_id", 1},
+			{"_id", -1},
 		}
 	}
 
@@ -169,7 +169,7 @@ func (collection MongoCollectionWrapper) FindPaginated(sessContext mongo.Session
 		pipeline = append(pipeline, pipe...)
 	}
 
-	pipeline = append(pipeline, sort, limit, skip)
+	pipeline = append(pipeline, sort, skip, limit)
 
 	count, err := collection.Collection.CountDocuments(ctx, filter)
 	if err != nil {
