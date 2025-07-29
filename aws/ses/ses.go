@@ -12,14 +12,18 @@ var nilSesError = errors.New("Access ses failed because ses nil")
 
 const CharSet = "UTF-8"
 
+var svc *ses.SES
+
 type SesWrapper struct {
 	Ses         *ses.SES
 	EmailSender string
 }
 
 func InitSes(emailSender string) SesWrapper {
-	sess := config.GetAWSSession()
-	svc := ses.New(sess)
+	if svc == nil {
+		sess := config.GetAWSSession()
+		svc = ses.New(sess)
+	}
 
 	return SesWrapper{svc, emailSender}
 }
