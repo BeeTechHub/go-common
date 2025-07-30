@@ -82,7 +82,7 @@ func StringDate01_ToTime(input string) (time.Time, error) {
 
 // String format "dd/MM/yyyy" in GMT+0 to time
 func StringDate02_ToTime(input string) (time.Time, error) {
-	t, err := time.Parse(DTFM_DATE_01, input)
+	t, err := time.Parse(DTFM_DATE_02, input)
 	return t, err
 }
 
