@@ -316,15 +316,20 @@ func (redisClient RedisClientWrapper) RemoveASet(folder string) error {
 		_keys[i] = key
 	}
 
+	_, err = redisClient.Client.Del(context.Background(), folder).Result()
+	if err != nil {
+		return err
+	}
+
 	_, err = redisClient.Client.Unlink(context.Background(), keys...).Result()
 	if err != nil {
 		return err
 	}
 
-	_, err = redisClient.Client.SRem(context.Background(), folder, _keys...).Result()
+	/*_, err = redisClient.Client.SRem(context.Background(), folder, _keys...).Result()
 	if err != nil {
 		return err
-	}
+	}*/
 
 	return nil
 }
