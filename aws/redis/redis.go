@@ -165,9 +165,8 @@ func (redisClient RedisClientWrapper) FlushAllAsync() error {
 		return nilClientError
 	}
 
-	redisClient.Client.FlushAllAsync(context.Background())
-
-	return nil
+	_, err := redisClient.Client.FlushAllAsync(context.Background()).Result()
+	return err
 }
 
 func (redisClient RedisClientWrapper) SetNXDataToCache(key string, value string, exprire time.Duration) (bool, error) {
@@ -271,26 +270,61 @@ func (redisClient RedisClientWrapper) SubscribeChannel(channelName string) (*red
 	return redisClient.Client.Subscribe(context.Background(), channelName), nil
 }
 
-func (redisClient RedisClientWrapper) Unlink(key string) (*redis.IntCmd, error) {
+func (redisClient RedisClientWrapper) Unlink(keys ...string) error {
 	if redisClient.Client == nil {
-		return nil, nilClientError
+		return nilClientError
 	}
 
-	return redisClient.Client.Unlink(context.Background(), key), nil
+	_, err := redisClient.Client.Unlink(context.Background(), keys...).Result()
+	return err
 }
 
-func (redisClient RedisClientWrapper) AddToSet(folder string, key ...any) (*redis.IntCmd, error) {
+func (redisClient RedisClientWrapper) AddToSet(folder string, keys ...any) error {
 	if redisClient.Client == nil {
-		return nil, nilClientError
+		return nilClientError
 	}
 
-	return redisClient.Client.SAdd(context.Background(), folder, key...), nil
+	_, err := redisClient.Client.SAdd(context.Background(), folder, keys...).Result()
+	return err
 }
 
-func (redisClient RedisClientWrapper) RemoveFromSet(folder string, key ...any) (*redis.IntCmd, error) {
+func (redisClient RedisClientWrapper) RemoveFromSet(folder string, keys ...any) error {
 	if redisClient.Client == nil {
-		return nil, nilClientError
+		return nilClientError
 	}
 
-	return redisClient.Client.SRem(context.Background(), folder, key...), nil
+	_, err := redisClient.Client.SRem(context.Background(), folder, keys...).Result()
+	return err
+}
+
+func (redisClient RedisClientWrapper) RemoveASet(folder string) error {
+	if redisClient.Client == nil {
+		return nilClientError
+	}
+
+	keys, err := redisClient.Client.SMembers(context.Background(), folder).Result()
+	if err != nil {
+		return err
+	}
+
+	if len(keys) == 0 {
+		return nil
+	}
+
+	_keys := make([]interface{}, len(keys))
+	for i, key := range keys {
+		_keys[i] = key
+	}
+
+	_, err = redisClient.Client.Unlink(context.Background(), keys...).Result()
+	if err != nil {
+		return err
+	}
+
+	_, err = redisClient.Client.SRem(context.Background(), folder, _keys...).Result()
+	if err != nil {
+		return err
+	}
+
+	return nil
 }
