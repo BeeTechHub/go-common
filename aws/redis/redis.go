@@ -270,3 +270,27 @@ func (redisClient RedisClientWrapper) SubscribeChannel(channelName string) (*red
 
 	return redisClient.Client.Subscribe(context.Background(), channelName), nil
 }
+
+func (redisClient RedisClientWrapper) Unlink(key string) (*redis.IntCmd, error) {
+	if redisClient.Client == nil {
+		return nil, nilClientError
+	}
+
+	return redisClient.Client.Unlink(context.Background(), key), nil
+}
+
+func (redisClient RedisClientWrapper) AddToSet(folder string, key ...any) (*redis.IntCmd, error) {
+	if redisClient.Client == nil {
+		return nil, nilClientError
+	}
+
+	return redisClient.Client.SAdd(context.Background(), folder, key...), nil
+}
+
+func (redisClient RedisClientWrapper) RemoveFromSet(folder string, key ...any) (*redis.IntCmd, error) {
+	if redisClient.Client == nil {
+		return nil, nilClientError
+	}
+
+	return redisClient.Client.SRem(context.Background(), folder, key...), nil
+}
