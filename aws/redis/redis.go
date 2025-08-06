@@ -53,7 +53,8 @@ func initClientAws(cacheClusterName string) (*RedisClientWrapper, error) {
 	clusterName := cacheClusterName
 	// Get the Elasticache Redis cluster's endpoint address and port
 	result, err := svc.DescribeCacheClusters(&elasticache.DescribeCacheClustersInput{
-		CacheClusterId: aws.String(clusterName),
+		CacheClusterId:    aws.String(clusterName),
+		ShowCacheNodeInfo: aws.Bool(true),
 	})
 	if err != nil {
 		if aerr, ok := err.(awserr.Error); ok {
@@ -69,8 +70,10 @@ func initClientAws(cacheClusterName string) (*RedisClientWrapper, error) {
 			}
 		} else {
 			// Print the error, cast err to awserr.Error to get the Code and Message from an error.
-			fmt.Println("Get redis cluster error:%s", err.Error())
+			fmt.Printf("Get redis cluster error:%s", err.Error())
 		}
+
+		return nil, err
 	}
 
 	// print the endpoint of the cluster
@@ -99,6 +102,11 @@ func initClientAws(cacheClusterName string) (*RedisClientWrapper, error) {
 	redisClient := redis.NewClient(&redis.Options{
 		Addr: fmt.Sprintf("%s:%d", *endpoint, *port),
 	})
+
+	_, err = redisClient.Ping(context.Background()).Result()
+	if err != nil {
+		return nil, fmt.Errorf("Failed to ping Redis: %w", err)
+	}
 
 	return &RedisClientWrapper{redisClient}, nil
 }
