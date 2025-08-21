@@ -191,3 +191,10 @@ func (collection MongoCollectionWrapper) FindPaginated(sessContext mongo.Session
 
 	return count, err
 }
+
+func (collection MongoCollectionWrapper) FindOneAndUpdate(sessContext mongo.SessionContext, record any, filter bson.M, update bson.M, opts ...*options.FindOneAndUpdateOptions) error {
+	ctx, cancel := getOrCreateContext(sessContext, collection.Timeout)
+	defer cancel()
+
+	return collection.Collection.FindOneAndUpdate(ctx, filter, update, opts...).Decode(record)
+}
