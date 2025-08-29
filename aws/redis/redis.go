@@ -341,3 +341,16 @@ func (redisClient RedisClientWrapper) RemoveASet(folder string) error {
 
 	return nil
 }
+
+func (redisClient RedisClientWrapper) FlushDBAsync() error {
+	if redisClient.Client == nil {
+		return nilClientError
+	}
+
+	_, err := redisClient.Client.FlushDBAsync(context.Background()).Result()
+	if err != nil {
+		return err
+	}
+
+	return nil
+}
