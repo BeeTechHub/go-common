@@ -354,3 +354,11 @@ func (redisClient RedisClientWrapper) FlushDBAsync() error {
 
 	return nil
 }
+
+func (redisClient RedisClientWrapper) GetSetKeys(folder string) ([]string, error) {
+	if redisClient.Client == nil {
+		return nil, nilClientError
+	}
+
+	return redisClient.Client.SMembers(context.Background(), folder).Result()
+}
