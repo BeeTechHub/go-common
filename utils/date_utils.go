@@ -13,6 +13,7 @@ const DTFM_DATE_TIME_04 string = "02/01/2006 15:04:05"
 const DTFM_DATE_TIME_05 string = "2006-01-02T15:04:05Z"
 const DTFM_DATE_01 string = "20060102"
 const DTFM_DATE_02 string = "02/01/2006"
+const DTFM_DATE_03 string = "2006/01/02"
 const DTFM_DATE_MONTH_01 string = "200601"
 
 // Time to string format "dd/MM/yyyy HH:mm" in GMT+7
@@ -43,6 +44,22 @@ func Time_ToStringDate01_GmtPlus7(input time.Time) (string, error) {
 
 	// Format the time using the desired layout
 	formattedTime := nowInGmtPlus7.Format(DTFM_DATE_01)
+
+	return formattedTime, nil
+}
+
+// Time to string format "yyyy/MM/dd" in GMT+7
+func Time_ToStringDate03_GmtPlus7(input time.Time) (string, error) {
+	location, err := time.LoadLocation(GmtPlus7)
+	if err != nil {
+		return "", err
+	}
+
+	// Convert the current time to the desired timezone
+	nowInGmtPlus7 := input.In(location)
+
+	// Format the time using the desired layout
+	formattedTime := nowInGmtPlus7.Format(DTFM_DATE_03)
 
 	return formattedTime, nil
 }
