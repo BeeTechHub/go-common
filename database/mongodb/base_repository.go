@@ -198,3 +198,18 @@ func (collection MongoCollectionWrapper) FindOneAndUpdate(sessContext mongo.Sess
 
 	return collection.Collection.FindOneAndUpdate(ctx, filter, update, opts...).Decode(record)
 }
+
+func (collection MongoCollectionWrapper) FindOneAndReplace(sessContext mongo.SessionContext, returnRecord any, filter bson.M, updateRecord any, opts ...*options.FindOneAndReplaceOptions) error {
+	ctx, cancel := getOrCreateContext(sessContext, collection.Timeout)
+	defer cancel()
+
+	return collection.Collection.FindOneAndReplace(ctx, filter, updateRecord, opts...).Decode(returnRecord)
+}
+
+func (collection MongoCollectionWrapper) ReplaceOne(sessContext mongo.SessionContext, filter bson.M, updateRecord any, opts ...*options.ReplaceOptions) error {
+	ctx, cancel := getOrCreateContext(sessContext, collection.Timeout)
+	defer cancel()
+
+	_, err := collection.Collection.ReplaceOne(ctx, filter, updateRecord, opts...)
+	return err
+}
