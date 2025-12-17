@@ -49,6 +49,22 @@ func Time_ToStringDate01_GmtPlus7(input time.Time) (string, error) {
 	return formattedTime, nil
 }
 
+// Time to string format "dd/MM/yyyy" in GMT+7
+func Time_ToStringDate02_GmtPlus7(input time.Time) (string, error) {
+	location, err := time.LoadLocation(GmtPlus7)
+	if err != nil {
+		return "", err
+	}
+
+	// Convert the current time to the desired timezone
+	nowInGmtPlus7 := input.In(location)
+
+	// Format the time using the desired layout
+	formattedTime := nowInGmtPlus7.Format(DTFM_DATE_02)
+
+	return formattedTime, nil
+}
+
 // Time to string format "yyyy/MM/dd" in GMT+7
 func Time_ToStringDate03_GmtPlus7(input time.Time) (string, error) {
 	location, err := time.LoadLocation(GmtPlus7)
