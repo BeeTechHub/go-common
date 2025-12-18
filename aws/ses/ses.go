@@ -13,7 +13,6 @@ import (
 	config "github.com/BeeTechHub/go-common/aws/config"
 	"github.com/aws/aws-sdk-go/aws"
 	"github.com/aws/aws-sdk-go/service/ses"
-	"github.com/jaytaylor/html2text"
 )
 
 var nilSesError = errors.New("Access ses failed because ses nil")
@@ -91,11 +90,11 @@ func (sesWrapper SesWrapper) SendRichEmail(recipients []string, subject string, 
 		return nil, errors.New("email body must not be empty")
 	}
 
-	if textBody == "" {
+	/*if textBody == "" {
 		if _textBody, err := html2text.FromString(htmlBody); err == nil {
 			textBody = _textBody
 		}
-	}
+	}*/
 
 	if htmlBody == "" {
 		htmlBody = "<pre>" + html.EscapeString(textBody) + "</pre>"
