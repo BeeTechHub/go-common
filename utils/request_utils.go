@@ -166,6 +166,31 @@ func GetObjectIdSliceFromRequestParam(c *fiber.Ctx, paramName string) ([]primiti
 	return output, nil
 }
 
+func GetInt64SliceFromRequestParam(c *fiber.Ctx, paramName string) ([]int64, error) {
+	output := []int64{}
+	queryParams := c.Context().QueryArgs()
+	aParams := []string{}
+
+	queryParams.VisitAll(func(key, value []byte) {
+		if string(key) == paramName {
+			valueStr := string(value)
+			if valueStr != "" {
+				aParams = append(aParams, string(value))
+			}
+		}
+	})
+
+	for _, v := range aParams {
+		if value, err := strconv.ParseInt(v, 10, 64); err != nil {
+			return output, err
+		} else {
+			output = append(output, value)
+		}
+	}
+
+	return output, nil
+}
+
 func GetObjectIdFromRequestPath(c *fiber.Ctx, paramName string) (primitive.ObjectID, error) {
 	str := c.Params(paramName)
 
